@@ -2,7 +2,7 @@ import streamlit as st
 import pickle
 import json
 
-# --- Load Models and Columns ---
+# --- Load Models ---
 with open("diabetes_model.pickle", "rb") as f:
     diabetes_model = pickle.load(f)
 with open("heart_model.pickle", "rb") as f:
@@ -10,28 +10,35 @@ with open("heart_model.pickle", "rb") as f:
 with open("parkinsons_model.pkl", "rb") as f:
     parkinsons_model = pickle.load(f)
 
+# --- Load Columns from JSON and Extract Lists ---
 with open("diabetes_columns.json", "r") as f:
-    diabetes_columns = json.load(f)
+    diabetes_columns_dict = json.load(f)
+diabetes_columns = diabetes_columns_dict["data_columns"]
+
 with open("heart_columns.json", "r") as f:
-    heart_columns = json.load(f)
+    heart_columns_dict = json.load(f)
+heart_columns = heart_columns_dict["data_columns"]
+
 with open("parkinsons_columns.json", "r") as f:
-    parkinsons_columns = json.load(f)
+    parkinsons_columns_dict = json.load(f)
+parkinsons_columns = parkinsons_columns_dict["data_columns"]
 
-# --- Custom CSS for Styles ---
+# --- Optional: Custom CSS ---
 def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
+    try:
+        with open(file_name) as f:
+            st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+    except Exception:
+        pass
 local_css('app_style.css')
 
 # --- Sidebar Navigation ---
 st.sidebar.title("Multiple Disease Prediction System")
 page = st.sidebar.radio("Choose Prediction", ["Diabetes", "Heart Disease", "Parkinson's"])
 
-# --- Main Page UI with Custom Form Layouts ---
+# --- Diabetes Form ---
 def diabetes_form():
     st.markdown("<h1 style='margin-top:32px;'>Diabetes Prediction using ML</h1>", unsafe_allow_html=True)
-    # Arrange fields in two rows for visual similarity
     col1, col2, col3, col4 = st.columns(4)
     col5, col6, col7, col8 = st.columns(4)
     user_input = {}
@@ -43,7 +50,6 @@ def diabetes_form():
     user_input[diabetes_columns[5]] = col6.number_input("BMI", min_value=0.0, key="bmi")
     user_input[diabetes_columns[6]] = col7.number_input("Diabetes Pedigree Function Value", min_value=0.0, key="diabetespedigreefunction")
     user_input[diabetes_columns[7]] = col8.number_input("Age of the person", min_value=0.0, key="age")
-
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Diabetes Test Result", key="diabetes_submit"):
         features = [user_input[col] for col in diabetes_columns]
@@ -51,9 +57,9 @@ def diabetes_form():
         result = "Diabetes Detected" if pred[0] == 1 else "No Diabetes"
         st.success(result)
 
+# --- Heart Disease Form ---
 def heart_form():
     st.markdown("<h1 style='margin-top:32px;'>Heart Disease Prediction using ML</h1>", unsafe_allow_html=True)
-    # Arrange all fields in rows of 4 columns each for clean layout
     cols = st.columns(4)
     user_input = {}
     for i, colname in enumerate(heart_columns):
@@ -61,7 +67,8 @@ def heart_form():
         row = i // 4
         if idx == 0 and i != 0:
             cols = st.columns(4)
-        user_input[colname] = cols[idx].number_input(colname.replace("_", " ").title(), key=f"heart_{colname}")
+        pretty_label = colname.replace("_", " ").replace("cp", "Chest Pain Type").replace("trestbps", "Resting Blood Pressure").replace("chol", "Serum Cholesterol (mg/dl)").replace("fbs", "Fasting Blood Sugar > 120 mg/dl").replace("restecg", "Resting ECG Results").replace("thalach", "Max Heart Rate Achieved").replace("exang", "Exercise Induced Angina").replace("oldpeak", "ST Depression by Exercise").replace("slope", "Slope of Peak Exercise ST Segment").replace("ca", "Major Vessels Colored by Fluoroscopy").replace("thal", "Thal (0=normal;1=fixed defect;2=reversible defect)")
+        user_input[colname] = cols[idx].number_input(pretty_label, key=f"heart_{colname}")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Heart Test Result", key="heart_submit"):
         features = [user_input[col] for col in heart_columns]
@@ -69,9 +76,9 @@ def heart_form():
         result = "Heart Disease Detected" if pred[0] == 1 else "No Heart Disease"
         st.success(result)
 
+# --- Parkinson's Disease Form ---
 def parkinsons_form():
     st.markdown("<h1 style='margin-top:32px;'>Parkinson's Disease Prediction using ML</h1>", unsafe_allow_html=True)
-    # Arrange fields in multiple rows of 4 columns (Parkinson's has many features)
     user_input = {}
     total = len(parkinsons_columns)
     for r in range(0, total, 4):
@@ -79,7 +86,8 @@ def parkinsons_form():
         for i in range(4):
             if r+i < total:
                 colname = parkinsons_columns[r+i]
-                user_input[colname] = cols[i].number_input(colname.replace("_", " ").title(), key=f"parkinsons_{colname}")
+                pretty_label = colname.replace("mdvp:", "MDVP:").replace("jitter:", "Jitter:").replace("shimmer:", "Shimmer:").replace("(", "").replace(")", "").replace("_", " ")
+                user_input[colname] = cols[i].number_input(pretty_label, key=f"parkinsons_{colname}")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Parkinson's Test Result", key="parkinsons_submit"):
         features = [user_input[col] for col in parkinsons_columns]
@@ -87,7 +95,7 @@ def parkinsons_form():
         result = "Parkinson's Detected" if pred[0] == 1 else "No Parkinson's Disease"
         st.success(result)
 
-# -- Routing --
+# --- Routing ---
 if page == "Diabetes":
     diabetes_form()
 elif page == "Heart Disease":
