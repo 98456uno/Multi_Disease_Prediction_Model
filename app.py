@@ -42,14 +42,14 @@ def diabetes_form():
     col1, col2, col3, col4 = st.columns(4)
     col5, col6, col7, col8 = st.columns(4)
     user_input = {}
-    user_input[diabetes_columns[0]] = col1.number_input("Number of Pregnancies", min_value=0, key="pregnancies")
-    user_input[diabetes_columns[1]] = col2.number_input("Glucose Level", min_value=0, key="glucose")
-    user_input[diabetes_columns[2]] = col3.number_input("Blood Pressure", min_value=0, key="bloodpressure")
-    user_input[diabetes_columns[3]] = col4.number_input("Skin Thickness Value", min_value=0, key="skinthickness")
-    user_input[diabetes_columns[4]] = col5.number_input("Insulin Level", min_value=0, key="insulin")
-    user_input[diabetes_columns[5]] = col6.number_input("BMI", min_value=0, key="bmi")
-    user_input[diabetes_columns[6]] = col7.number_input("Diabetes Pedigree Function Value", min_value=0, key="diabetespedigreefunction")
-    user_input[diabetes_columns[7]] = col8.number_input("Age of the person", min_value=0, key="age")
+    user_input[diabetes_columns[0]] = col1.number_input("Number of Pregnancies", value=None, key="pregnancies")
+    user_input[diabetes_columns[1]] = col2.number_input("Glucose Level", value=None, key="glucose")
+    user_input[diabetes_columns[2]] = col3.number_input("Blood Pressure", value=None, key="bloodpressure")
+    user_input[diabetes_columns[3]] = col4.number_input("Skin Thickness Value", value=None, key="skinthickness")
+    user_input[diabetes_columns[4]] = col5.number_input("Insulin Level", value=None, key="insulin")
+    user_input[diabetes_columns[5]] = col6.number_input("BMI", value=None, key="bmi")
+    user_input[diabetes_columns[6]] = col7.number_input("Diabetes Pedigree Function Value",value=None, key="diabetespedigreefunction")
+    user_input[diabetes_columns[7]] = col8.number_input("Age of the person",value=None, key="age")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Diabetes Test Result", key="diabetes_submit"):
         features = [user_input[col] for col in diabetes_columns]
@@ -102,5 +102,6 @@ elif page == "Heart Disease":
     heart_form()
 elif page == "Parkinson's":
     parkinsons_form()
+
 
 
