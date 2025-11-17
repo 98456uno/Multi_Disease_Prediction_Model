@@ -53,10 +53,8 @@ def diabetes_form():
     st.markdown("<br>", unsafe_allow_html=True)
     submitted = st.button("Diabetes Test Result", key="diabetes_submit")
     if submitted:
-        missing = [col for col in diabetes_columns if user_input[col] is None]
-        if missing:
-            for col in missing:
-                st.warning(f"Please fill '{col.replace('_',' ').title()}' field above.")
+        if any(user_input[col] is None for col in diabetes_columns):
+            st.warning("Fill all the Fields.")
         else:
             features = [user_input[col] for col in diabetes_columns]
             pred = diabetes_model.predict([features])
@@ -68,7 +66,6 @@ def heart_form():
     st.markdown("<h1 style='margin-top:32px;'>Heart Disease Prediction using ML</h1>", unsafe_allow_html=True)
     cols = st.columns(4)
     user_input = {}
-    labels = []
     for i, colname in enumerate(heart_columns):
         idx = i % 4
         row = i // 4
@@ -76,15 +73,11 @@ def heart_form():
             cols = st.columns(4)
         pretty_label = colname.replace("_", " ").replace("cp", "Chest Pain Type").replace("trestbps", "Resting Blood Pressure").replace("chol", "Serum Cholesterol (mg/dl)").replace("fbs", "Fasting Blood Sugar > 120 mg/dl").replace("restecg", "Resting ECG Results").replace("thalach", "Max Heart Rate Achieved").replace("exang", "Exercise Induced Angina").replace("oldpeak", "ST Depression by Exercise").replace("slope", "Slope of Peak Exercise ST Segment").replace("ca", "Major Vessels Colored by Fluoroscopy").replace("thal", "Thal (0=normal;1=fixed defect;2=reversible defect)")
         user_input[colname] = cols[idx].number_input(pretty_label, value=None, key=f"heart_{colname}")
-        labels.append(pretty_label)
     st.markdown("<br>", unsafe_allow_html=True)
     submitted = st.button("Heart Test Result", key="heart_submit")
     if submitted:
-        missing = [col for col in heart_columns if user_input[col] is None]
-        if missing:
-            for col in missing:
-                lbl = labels[heart_columns.index(col)]
-                st.warning(f"Please fill '{lbl}' field above.")
+        if any(user_input[col] is None for col in heart_columns):
+            st.warning("Fill all the Fields.")
         else:
             features = [user_input[col] for col in heart_columns]
             pred = heart_model.predict([features])
@@ -95,7 +88,6 @@ def heart_form():
 def parkinsons_form():
     st.markdown("<h1 style='margin-top:32px;'>Parkinson's Disease Prediction using ML</h1>", unsafe_allow_html=True)
     user_input = {}
-    labels = []
     total = len(parkinsons_columns)
     for r in range(0, total, 4):
         cols = st.columns(4)
@@ -104,15 +96,11 @@ def parkinsons_form():
                 colname = parkinsons_columns[r+i]
                 pretty_label = colname.replace("mdvp:", "MDVP:").replace("jitter:", "Jitter:").replace("shimmer:", "Shimmer:").replace("(", "").replace(")", "").replace("_", " ")
                 user_input[colname] = cols[i].number_input(pretty_label, value=None, key=f"parkinsons_{colname}")
-                labels.append(pretty_label)
     st.markdown("<br>", unsafe_allow_html=True)
     submitted = st.button("Parkinson's Test Result", key="parkinsons_submit")
     if submitted:
-        missing = [col for col in parkinsons_columns if user_input[col] is None]
-        if missing:
-            for col in missing:
-                lbl = labels[parkinsons_columns.index(col)]
-                st.warning(f"Please fill '{lbl}' field above.")
+        if any(user_input[col] is None for col in parkinsons_columns):
+            st.warning("Fill all the Fields.")
         else:
             features = [user_input[col] for col in parkinsons_columns]
             pred = parkinsons_model.predict([features])
