@@ -37,6 +37,7 @@ def predict_diabetes():
         result = "Diabetes Detected" if prediction[0] == 1 else "No Diabetes"
         st.success(result)
 
+
 def predict_heart():
     st.header("Heart Disease Prediction using ML")
     inputs = {}
@@ -71,3 +72,4 @@ elif selected_page == "Parkinson's":
 # Optional: Custom CSS styling for Streamlit widgets
 with open("app_style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
