@@ -68,7 +68,7 @@ def heart_form():
         if idx == 0 and i != 0:
             cols = st.columns(4)
         pretty_label = colname.replace("_", " ").replace("cp", "Chest Pain Type").replace("trestbps", "Resting Blood Pressure").replace("chol", "Serum Cholesterol (mg/dl)").replace("fbs", "Fasting Blood Sugar > 120 mg/dl").replace("restecg", "Resting ECG Results").replace("thalach", "Max Heart Rate Achieved").replace("exang", "Exercise Induced Angina").replace("oldpeak", "ST Depression by Exercise").replace("slope", "Slope of Peak Exercise ST Segment").replace("ca", "Major Vessels Colored by Fluoroscopy").replace("thal", "Thal (0=normal;1=fixed defect;2=reversible defect)")
-        user_input[colname] = cols[idx].number_input(pretty_label, key=f"heart_{colname}")
+        user_input[colname] = cols[idx].number_input(pretty_label,value=None, key=f"heart_{colname}")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Heart Test Result", key="heart_submit"):
         features = [user_input[col] for col in heart_columns]
@@ -87,7 +87,7 @@ def parkinsons_form():
             if r+i < total:
                 colname = parkinsons_columns[r+i]
                 pretty_label = colname.replace("mdvp:", "MDVP:").replace("jitter:", "Jitter:").replace("shimmer:", "Shimmer:").replace("(", "").replace(")", "").replace("_", " ")
-                user_input[colname] = cols[i].number_input(pretty_label, key=f"parkinsons_{colname}")
+                user_input[colname] = cols[i].number_input(pretty_label,value=None, key=f"parkinsons_{colname}")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Parkinson's Test Result", key="parkinsons_submit"):
         features = [user_input[col] for col in parkinsons_columns]
@@ -102,4 +102,5 @@ elif page == "Heart Disease":
     heart_form()
 elif page == "Parkinson's":
     parkinsons_form()
+
 
